@@ -1,0 +1,153 @@
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+local TextButton = Instance.new("TextButton")
+local UICorner = Instance.new("UICorner")
+local UICorner_2 = Instance.new("UICorner")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.741694927, 0, 0.350502521, 0)
+Frame.Size = UDim2.new(0, 289, 0, 183)
+
+TextLabel.Parent = Frame
+TextLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BackgroundTransparency = 1.000
+TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BorderSizePixel = 0
+TextLabel.Position = UDim2.new(0.00346020772, 0, 0, 0)
+TextLabel.Size = UDim2.new(0, 288, 0, 50)
+TextLabel.Font = Enum.Font.SourceSans
+TextLabel.Text = "i8i8d2d2's Game Crasher"
+TextLabel.TextColor3 = Color3.fromRGB(148, 148, 148)
+TextLabel.TextScaled = true
+TextLabel.TextSize = 14.000
+TextLabel.TextWrapped = true
+
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(16, 16, 16)
+TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0.152059063, 0, 0.415185809, 0)
+TextButton.Size = UDim2.new(0, 200, 0, 50)
+TextButton.Font = Enum.Font.SourceSans
+TextButton.Text = "Crash Game"
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.TextSize = 14.000
+
+UICorner.Parent = TextButton
+
+UICorner_2.Parent = Frame
+
+local function WLUQU_fake_script()
+	local button = TextButton
+	local runCreating = false
+	local player = game.Players.LocalPlayer
+	local workspace = game.Workspace
+
+	local meshTypes = {
+		Enum.MeshType.Brick,
+		Enum.MeshType.Sphere,
+		Enum.MeshType.Cylinder,
+		Enum.MeshType.Head,
+		Enum.MeshType.Wedge
+	}
+
+	local colors = {
+		Color3.fromRGB(255, 160, 160),
+		Color3.fromRGB(184, 255, 180),
+		Color3.fromRGB(194, 195, 255),
+		Color3.fromRGB(255, 249, 164),
+		Color3.fromRGB(183, 249, 255),
+		Color3.fromRGB(255, 183, 251),
+	}
+
+	button.MouseButton1Click:Connect(function()
+		if runCreating then return end
+		runCreating = true
+
+		while true do
+			local character = player.Character
+			local hrp = character and character:FindFirstChild("HumanoidRootPart")
+			if hrp then
+				for i = 1, 100 do
+					local part = Instance.new("Part")
+					part.Size = Vector3.new(4, 1, 2)
+					part.Anchored = false
+					part.TopSurface = Enum.SurfaceType.Studs
+					part.BottomSurface = Enum.SurfaceType.Smooth
+					part.BrickColor = BrickColor.new("Medium stone grey")
+					part.Material = Enum.Material.Plastic
+					part.Parent = workspace
+
+					local randomX = math.random(-20, 20)
+					local randomZ = math.random(-20, 20)
+					local spawnPos = Vector3.new(hrp.Position.X + randomX, hrp.Position.Y + 5, hrp.Position.Z + randomZ)
+					part.Position = spawnPos
+
+					local mesh = Instance.new("SpecialMesh")
+					mesh.MeshType = meshTypes[1]
+					mesh.Parent = part
+
+					coroutine.wrap(function()
+						local index = 1
+						while part and part.Parent do
+							part.Color = colors[math.random(1, #colors)]
+							mesh.MeshType = meshTypes[index]
+							index = index + 1
+							if index > #meshTypes then
+								index = 1
+							end
+							wait(0.2)
+						end
+					end)()
+				end
+			end
+			wait(0.8)
+		end
+	end)
+end
+coroutine.wrap(WLUQU_fake_script)()
+
+local function MYKO_fake_script()
+	local UIS = game:GetService('UserInputService')
+	local frame = Frame
+	local dragToggle = nil
+	local dragSpeed = 0.25
+	local dragStart = nil
+	local startPos = nil
+
+	local function updateInput(input)
+		local delta = input.Position - dragStart
+		local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+			startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+	end
+
+	frame.InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
+			dragToggle = true
+			dragStart = input.Position
+			startPos = frame.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragToggle = false
+				end
+			end)
+		end
+	end)
+
+	UIS.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			if dragToggle then
+				updateInput(input)
+			end
+		end
+	end)
+end
+coroutine.wrap(MYKO_fake_script)()
